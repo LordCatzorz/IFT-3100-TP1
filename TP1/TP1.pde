@@ -1,5 +1,6 @@
-color primaryColour = color(255, 255, 255); //<>// //<>//
+color primaryColour = color(255, 255, 255); //<>// //<>// //<>//
 color secondaryColour = color(0, 0, 0);
+color debugColour = color(255, 0, 0);
 
 int tileCountX = 4;
 int tileCountY = 4;
@@ -8,12 +9,13 @@ void setup()
 {
   size(512, 512);
   drawCheckerboard(0, 0, width, height, tileCountX, tileCountY, primaryColour, secondaryColour);
-  
+
   float tileWidth = width/tileCountX;
   float tileHeight =  height/tileCountY;
-  
+
   drawPlusSign(getTilePosX(0), getTilePosY(0), tileWidth, tileHeight, 0.125, 0.5, 0.5, 0.125, secondaryColour, 0.5, 0.5);
   drawCrossSign(getTilePosX(2), getTilePosY(0), tileWidth, tileHeight, 0.25, 0.25, 0.75, 0.75, 0.125, secondaryColour);
+  drawStackedLine(getTilePosX(1), getTilePosY(1), tileWidth, tileHeight, secondaryColour);
   drawRecursiveCheckerboard(getTilePosX(3), getTilePosY(3), tileWidth, tileHeight, tileCountX, tileCountY, primaryColour, secondaryColour, 3, 3);
 }
 
@@ -75,7 +77,7 @@ void drawCheckerboard(float _xPosScene, float _yPosScene, float _widthScene, flo
 /// @param[in] _recursiveTileY The number of the horizontal tile in which the checkboard recursivity will happen. Starts at 0;
 void drawRecursiveCheckerboard(float _xPosScene, float _yPosScene, float _widthScene, float _heightScene, int _tileCountX, int _tileCountY, color _colour1, color _colour2, int _recursiveTileX, int _recursiveTileY)
 {
- //<>//
+
   drawCheckerboard(_xPosScene, _yPosScene, _widthScene, _heightScene, _tileCountX, _tileCountY, _colour1, _colour2);
   if (_widthScene > 0 && _heightScene > 0)
   {
@@ -103,21 +105,21 @@ void drawPlusSign(float _xPosScene, float _yPosScene, float _widthScene, float _
 {
   float centreX = _xPosScene + _widthScene * _ratioXPositionCentre;
   float centreY = _yPosScene + _heightScene * _ratioYPositionCentre;
-  
+
   float verticalArmWidth = _widthScene * _widthRatioVerticalArm;
   float verticalArmHeight = _heightScene * _heightRatioVerticalArm;
-  
+
   float horizontalArmWidth = _widthScene * _widthRatioHorizontalArm;
   float horizontalArmHeight = _heightScene * _heightRatioHorizontalArm;
-  
+
   float verticalArmX = centreX - ((verticalArmWidth)/2);
   float verticalArmY = centreY - ((verticalArmHeight)/2);
   float horizontalArmX = centreX - ((horizontalArmWidth)/2);
   float horizontalArmY = centreY - ((horizontalArmHeight)/2);
-  
+
   noStroke();
   fill(_colour);
-  
+
   rect(verticalArmX, verticalArmY, verticalArmWidth, verticalArmHeight);
   rect(horizontalArmX, horizontalArmY, horizontalArmWidth, horizontalArmHeight);
 }
@@ -138,7 +140,53 @@ void drawCrossSign(float _xPosScene, float _yPosScene, float _widthScene, float 
   noFill();
   stroke(_colour);
   strokeWeight(sqrt(_widthScene * _heightScene) * _strokeRatio);
-  
+
   line(_xPosScene + (_ratioXBegin * _widthScene), _yPosScene + (_ratioYBegin * _heightScene), _xPosScene + (_ratioXEnd * _widthScene), _yPosScene + (_ratioYEnd * _heightScene));
   line(_xPosScene + (_ratioXEnd * _widthScene), _yPosScene + (_ratioYBegin * _heightScene), _xPosScene + (_ratioXBegin * _widthScene), _yPosScene + (_ratioYEnd * _heightScene));
+}
+
+void drawStackedLine(float _xPosScene, float _yPosScene, float _widthScene, float _heightScene, color _colour)
+{
+  noStroke();
+  fill(_colour);
+  float lineWidth = 0.8 * _widthScene;
+  float linePosX = _xPosScene + (0.1 * _widthScene);
+
+  float linePosYDelta = 128/10.5;
+
+  float line5Height = _heightScene / 128;
+  float line4Height = line5Height + line5Height;
+  float line3Height = line4Height + line5Height;
+  float line2Height = line3Height + line4Height;
+  float line1Height = line2Height + line3Height;
+
+
+
+  float line5PosY = _yPosScene + (0.5  * _heightScene);
+
+  float line4PosY = line5PosY - 1 * linePosYDelta - line4Height/2;
+
+  float line3PosY = line5PosY - 2 *linePosYDelta - line3Height/2;
+
+  float line2PosY = line5PosY - 3 *linePosYDelta - line2Height/2;
+
+  float line1PosY = line5PosY - 4 *linePosYDelta - line1Height/2;
+
+  float line6PosY = line5PosY + 1 *linePosYDelta - line4Height/2;
+
+  float line7PosY = line5PosY + 2 *linePosYDelta - line3Height/2;
+
+  float line8PosY = line5PosY + 3 *linePosYDelta - line2Height/2;
+
+  float line9PosY = line5PosY + 4 *linePosYDelta - line1Height/2;
+
+  rect(linePosX, line1PosY, lineWidth, line1Height);
+  rect(linePosX, line2PosY, lineWidth, line2Height);
+  rect(linePosX, line3PosY, lineWidth, line3Height);
+  rect(linePosX, line4PosY, lineWidth, line4Height);
+  rect(linePosX, line5PosY, lineWidth, line5Height);
+  rect(linePosX, line6PosY, lineWidth, line4Height);
+  rect(linePosX, line7PosY, lineWidth, line3Height);
+  rect(linePosX, line8PosY, lineWidth, line2Height);
+  rect(linePosX, line9PosY, lineWidth, line1Height);
 }
