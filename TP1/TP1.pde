@@ -8,8 +8,12 @@ void setup()
 {
   size(512, 512);
   drawCheckerboard(0, 0, width, height, tileCountX, tileCountY, primaryColour, secondaryColour);
-
-  drawRecursiveCheckerboard(getTilePosX(3), getTilePosY(3), width, height, tileCountX, tileCountY, primaryColour, secondaryColour, 3, 3);
+  
+  float tileWidth = width/tileCountX;
+  float tileHeight =  height/tileCountY;
+  
+  drawPlusSign(getTilePosX(0), getTilePosY(0), tileWidth, tileHeight, 0.125, 0.5, 0.5, 0.125, secondaryColour);
+  drawRecursiveCheckerboard(getTilePosX(3), getTilePosY(3), tileWidth, tileHeight, tileCountX, tileCountY, primaryColour, secondaryColour, 3, 3);
 }
 
 /// Get the x coordinate of the top-left corner of a tile position given. Starts at 0.
@@ -70,14 +74,38 @@ void drawCheckerboard(float _xPosScene, float _yPosScene, float _widthScene, flo
 /// @param[in] _recursiveTileY The number of the horizontal tile in which the checkboard recursivity will happen. Starts at 0;
 void drawRecursiveCheckerboard(float _xPosScene, float _yPosScene, float _widthScene, float _heightScene, int _tileCountX, int _tileCountY, color _colour1, color _colour2, int _recursiveTileX, int _recursiveTileY)
 {
-
-  float widthOfTile = _widthScene / _tileCountX; //<>//
-  float heightOfTile = _heightScene / _tileCountY;
-  drawCheckerboard(_xPosScene, _yPosScene, widthOfTile, heightOfTile, _tileCountX, _tileCountY, _colour1, _colour2);
-  if (widthOfTile > 0 && heightOfTile > 0)
+ //<>//
+  drawCheckerboard(_xPosScene, _yPosScene, _widthScene, _heightScene, _tileCountX, _tileCountY, _colour1, _colour2);
+  if (_widthScene > 0 && _heightScene > 0)
   {
-    float xPosNextTile = _xPosScene + (_recursiveTileX * (widthOfTile/_tileCountX));
-    float yPosNextTile = _yPosScene + (_recursiveTileY * (heightOfTile/_tileCountY));
+    float widthOfTile = _widthScene / _tileCountX;
+    float heightOfTile = _heightScene / _tileCountY;
+    float xPosNextTile = _xPosScene + (_recursiveTileX * (widthOfTile));
+    float yPosNextTile = _yPosScene + (_recursiveTileY * (heightOfTile));
     drawRecursiveCheckerboard(xPosNextTile, yPosNextTile, widthOfTile, heightOfTile, _tileCountX, _tileCountY, _colour1, _colour2, _recursiveTileX, _recursiveTileY);
   }
+}
+
+void drawPlusSign(float _xPosScene, float _yPosScene, float _widthScene, float _heightScene, float _widthRatioVerticalArm, float _heightRatioVerticalArm, float _widthRatioHorizontalArm, float _heightRatioHorizontalArm, color _colour)
+{
+  float centreX = _xPosScene + _widthScene/2;
+  float centreY = _yPosScene + _heightScene/2;
+  
+  float verticalArmWidth = _widthScene * _widthRatioVerticalArm;
+  float verticalArmHeight = _heightScene * _heightRatioVerticalArm;
+  
+  float horizontalArmWidth = _widthScene * _widthRatioHorizontalArm;
+  float horizontalArmHeight = _heightScene * _heightRatioHorizontalArm;
+  
+  float verticalArmX = centreX - ((verticalArmWidth)/2);
+  float verticalArmY = centreY - ((verticalArmHeight)/2);
+  float horizontalArmX = centreX - ((horizontalArmWidth)/2);
+  float horizontalArmY = centreY - ((horizontalArmHeight)/2);
+  
+  noStroke();
+  fill(_colour);
+  
+  rect(verticalArmX, verticalArmY, verticalArmWidth, verticalArmHeight);
+  rect(horizontalArmX, horizontalArmY, horizontalArmWidth, horizontalArmHeight);
+  
 }
