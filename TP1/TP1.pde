@@ -12,7 +12,7 @@ void setup()
   float tileWidth = width/tileCountX;
   float tileHeight =  height/tileCountY;
   
-  drawPlusSign(getTilePosX(0), getTilePosY(0), tileWidth, tileHeight, 0.125, 0.5, 0.5, 0.125, secondaryColour);
+  drawPlusSign(getTilePosX(0), getTilePosY(0), tileWidth, tileHeight, 0.125, 0.5, 0.5, 0.125, secondaryColour, 0.5, 0.5);
   drawRecursiveCheckerboard(getTilePosX(3), getTilePosY(3), tileWidth, tileHeight, tileCountX, tileCountY, primaryColour, secondaryColour, 3, 3);
 }
 
@@ -27,7 +27,7 @@ int getTilePosY(int _tileNumberY)
   return _tileNumberY * (height / tileCountY);
 }
 
-/// Draws a recursive checkboard pattern in a defined Scene
+/// Draws a recursive checkboard pattern in a defined scene
 /// @param[in] _xPosScene The x position of the top-left corner of the rectangle of the scene.
 /// @param[in] _yPosScene The y position of the top-left corner of the rectangle of the scene.
 /// @param[in] _widthScene The width of the rectangle of the scene.
@@ -61,7 +61,7 @@ void drawCheckerboard(float _xPosScene, float _yPosScene, float _widthScene, flo
   }
 }
 
-/// Draws a recursive checkboard pattern in a defined Scene
+/// Draws a recursive checkboard pattern in a defined scene
 /// @param[in] _xPosScene The x position of the top-left corner of the rectangle of the scene.
 /// @param[in] _yPosScene The y position of the top-left corner of the rectangle of the scene.
 /// @param[in] _widthScene The width of the rectangle of the scene.
@@ -86,10 +86,22 @@ void drawRecursiveCheckerboard(float _xPosScene, float _yPosScene, float _widthS
   }
 }
 
-void drawPlusSign(float _xPosScene, float _yPosScene, float _widthScene, float _heightScene, float _widthRatioVerticalArm, float _heightRatioVerticalArm, float _widthRatioHorizontalArm, float _heightRatioHorizontalArm, color _colour)
+/// Draws a plus sign ("+") in a defined scene
+/// @param[in] _xPosScene The x position of the top-left corner of the rectangle of the scene.
+/// @param[in] _yPosScene The y position of the top-left corner of the rectangle of the scene.
+/// @param[in] _widthScene The width of the rectangle of the scene.
+/// @param[in] _heightScene The _heightScene of the rectangle of the scene.
+/// @param[in] _widthRatioVerticalArm Number between 0 and 1 reprensentating the percentage of the scene used by the width of the vertical arm of the +.
+/// @param[in] _heightRatioVerticalArm Number between 0 and 1 reprensentating the percentage of the scene used by the height of the vertical arm of the +.
+/// @param[in] _widthRatioHorizontalArm Number between 0 and 1 reprensentating the percentage of the scene used by the width of the horizontal arm of the +.
+/// @param[in] _heightRatioHorizontalArm Number between 0 and 1 reprensentating the percentage of the scene used by the width of the horizontal arm of the +.
+/// @param[in] _colour The colour of the +.
+/// @param[in] ratioXPositionCentre Number reprensentating the ratio X where to draw the + in the scene. 0.5 being the centre.
+/// @param[in] ratioYPositionCentre Number reprensentating the ratio Y where to draw the + in the scene. 0.5 being the centre.
+void drawPlusSign(float _xPosScene, float _yPosScene, float _widthScene, float _heightScene, float _widthRatioVerticalArm, float _heightRatioVerticalArm, float _widthRatioHorizontalArm, float _heightRatioHorizontalArm, color _colour, float ratioXPositionCentre, float ratioYPositionCentre)
 {
-  float centreX = _xPosScene + _widthScene/2;
-  float centreY = _yPosScene + _heightScene/2;
+  float centreX = _xPosScene + _widthScene * ratioXPositionCentre;
+  float centreY = _yPosScene + _heightScene * ratioYPositionCentre;
   
   float verticalArmWidth = _widthScene * _widthRatioVerticalArm;
   float verticalArmHeight = _heightScene * _heightRatioVerticalArm;
