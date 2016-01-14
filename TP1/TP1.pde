@@ -68,7 +68,6 @@ void drawCheckerboard(float _xPosScene, float _yPosScene, float _widthScene, flo
 /// @param[in] _colour2 The alternated colour to use for the checkboard pattern.
 /// @param[in] _recursiveTileX The number of the horizontal tile in which the checkboard recursivity will happen. Starts at 0;
 /// @param[in] _recursiveTileY The number of the horizontal tile in which the checkboard recursivity will happen. Starts at 0;
-
 void drawRecursiveCheckerboard(float _xPosScene, float _yPosScene, float _widthScene, float _heightScene, int _tileCountX, int _tileCountY, color _colour1, color _colour2, int _recursiveTileX, int _recursiveTileY)
 {
 
@@ -82,10 +81,3 @@ void drawRecursiveCheckerboard(float _xPosScene, float _yPosScene, float _widthS
     drawRecursiveCheckerboard(xPosNextTile, yPosNextTile, widthOfTile, heightOfTile, _tileCountX, _tileCountY, _colour1, _colour2, _recursiveTileX, _recursiveTileY);
   }
 }
-
-public static class Tile
-{
-  
-}
-
-coor
