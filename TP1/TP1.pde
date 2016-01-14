@@ -13,6 +13,7 @@ void setup()
   float tileHeight =  height/tileCountY;
   
   drawPlusSign(getTilePosX(0), getTilePosY(0), tileWidth, tileHeight, 0.125, 0.5, 0.5, 0.125, secondaryColour, 0.5, 0.5);
+  drawCrossSign(getTilePosX(2), getTilePosY(0), tileWidth, tileHeight, 0.25, 0.25, 0.75, 0.75, 0.125, secondaryColour);
   drawRecursiveCheckerboard(getTilePosX(3), getTilePosY(3), tileWidth, tileHeight, tileCountX, tileCountY, primaryColour, secondaryColour, 3, 3);
 }
 
@@ -96,12 +97,12 @@ void drawRecursiveCheckerboard(float _xPosScene, float _yPosScene, float _widthS
 /// @param[in] _widthRatioHorizontalArm Number between 0 and 1 reprensentating the percentage of the scene used by the width of the horizontal arm of the +.
 /// @param[in] _heightRatioHorizontalArm Number between 0 and 1 reprensentating the percentage of the scene used by the width of the horizontal arm of the +.
 /// @param[in] _colour The colour of the +.
-/// @param[in] ratioXPositionCentre Number reprensentating the ratio X where to draw the + in the scene. 0.5 being the centre.
-/// @param[in] ratioYPositionCentre Number reprensentating the ratio Y where to draw the + in the scene. 0.5 being the centre.
-void drawPlusSign(float _xPosScene, float _yPosScene, float _widthScene, float _heightScene, float _widthRatioVerticalArm, float _heightRatioVerticalArm, float _widthRatioHorizontalArm, float _heightRatioHorizontalArm, color _colour, float ratioXPositionCentre, float ratioYPositionCentre)
+/// @param[in] _ratioXPositionCentre Number between 0 and 1 reprensentating the ratio X where to draw the + in the scene. 0.5 being the centre.
+/// @param[in] _ratioYPositionCentre Number between 0 and 1 reprensentating the ratio Y where to draw the + in the scene. 0.5 being the centre.
+void drawPlusSign(float _xPosScene, float _yPosScene, float _widthScene, float _heightScene, float _widthRatioVerticalArm, float _heightRatioVerticalArm, float _widthRatioHorizontalArm, float _heightRatioHorizontalArm, color _colour, float _ratioXPositionCentre, float _ratioYPositionCentre)
 {
-  float centreX = _xPosScene + _widthScene * ratioXPositionCentre;
-  float centreY = _yPosScene + _heightScene * ratioYPositionCentre;
+  float centreX = _xPosScene + _widthScene * _ratioXPositionCentre;
+  float centreY = _yPosScene + _heightScene * _ratioYPositionCentre;
   
   float verticalArmWidth = _widthScene * _widthRatioVerticalArm;
   float verticalArmHeight = _heightScene * _heightRatioVerticalArm;
@@ -119,5 +120,25 @@ void drawPlusSign(float _xPosScene, float _yPosScene, float _widthScene, float _
   
   rect(verticalArmX, verticalArmY, verticalArmWidth, verticalArmHeight);
   rect(horizontalArmX, horizontalArmY, horizontalArmWidth, horizontalArmHeight);
+}
+
+/// Draws a cross sign ("X") in a defined scene
+/// @param[in] _xPosScene The x position of the top-left corner of the rectangle of the scene.
+/// @param[in] _yPosScene The y position of the top-left corner of the rectangle of the scene.
+/// @param[in] _widthScene The width of the rectangle of the scene.
+/// @param[in] _heightScene The _heightScene of the rectangle of the scene.
+/// @param[in] _ratioXBegin Number between 0 and 1 reprensentating the percentage of the scene where the top-left of the sign X coordinate is.
+/// @param[in] _ratioYBegin Number between 0 and 1 reprensentating the percentage of the scene where the top-left of the sign Y coordinate is.
+/// @param[in] _ratioXEnd Number between 0 and 1 reprensentating the percentage of the scene where the bottom-right of the sign X coordinate is.
+/// @param[in] _ratioYEnd Number between 0 and 1 reprensentating the percentage of the scene where the bottom-right of the sign X coordinate is.
+/// @param[in] _strokeRatio Number between 0 and 1 reprensentating the percentage of the scene a stroke use.
+/// @param[in] _colour The colour of the X.
+void drawCrossSign(float _xPosScene, float _yPosScene, float _widthScene, float _heightScene, float _ratioXBegin, float _ratioYBegin, float _ratioXEnd, float _ratioYEnd, float _strokeRatio, color _colour)
+{
+  noFill();
+  stroke(_colour);
+  strokeWeight(sqrt(_widthScene * _heightScene) * _strokeRatio);
   
+  line(_xPosScene + (_ratioXBegin * _widthScene), _yPosScene + (_ratioYBegin * _heightScene), _xPosScene + (_ratioXEnd * _widthScene), _yPosScene + (_ratioYEnd * _heightScene));
+  line(_xPosScene + (_ratioXEnd * _widthScene), _yPosScene + (_ratioYBegin * _heightScene), _xPosScene + (_ratioXBegin * _widthScene), _yPosScene + (_ratioYEnd * _heightScene));
 }
