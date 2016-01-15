@@ -7,7 +7,7 @@ int tileCountY = 4;
 
 void setup()
 {
-  size(1024, 1024);
+  size(512, 512);
   drawCheckerboard(0, 0, width, height, tileCountX, tileCountY, primaryColour, secondaryColour);
 
   float tileWidth = width/tileCountX;
@@ -18,6 +18,8 @@ void setup()
   drawStackedLine(getTilePosX(1), getTilePosY(1), tileWidth, tileHeight, 5, 0.8, secondaryColour);
   drawLinesOfEllipses(getTilePosX(3), getTilePosY(1), tileWidth, tileHeight, 3, 3, secondaryColour); 
   drawTarget(getTilePosX(0), getTilePosY(2), tileWidth, tileHeight, 0.9, 0.9, 14, secondaryColour, primaryColour); 
+  drawInfinitySign(getTilePosX(2), getTilePosY(2), tileWidth, tileHeight, 0.8, 0.3, secondaryColour); 
+  drawStar(getTilePosX(1), getTilePosY(3), tileWidth, tileHeight, 0.8, 0.8, 0.125, secondaryColour);
   drawRecursiveCheckerboard(getTilePosX(3), getTilePosY(3), tileWidth, tileHeight, tileCountX, tileCountY, primaryColour, secondaryColour, 3, 3);
 }
 
@@ -244,4 +246,71 @@ void drawTarget(float _xPosScene, float _yPosScene, float _widthScene, float _he
     float heightEllipse = (_heightOfLargestEllipse-(i*(0.87/_ellipseCount)))*_heightScene;
     ellipse(posX, posY, widthEllipse, heightEllipse);
   }
+}
+
+
+void  drawInfinitySign(float _xPosScene, float _yPosScene, float _widthScene, float _heightScene, float _ratioWidthInfinity, float _ratioHeightInfinity, color _colour)
+{
+}
+
+void  drawStar(float _xPosScene, float _yPosScene, float _widthScene, float _heightScene, float _ratioWidthStar, float _ratioHeightStar, float _strokeRatio, color _colour)
+{
+  noFill();
+  stroke(_colour);
+  strokeWeight(sqrt(_widthScene * _heightScene) * _strokeRatio);
+  
+  float heightEllipse = _ratioHeightStar * _heightScene;
+  float widthEllipse = _ratioWidthStar * _widthScene;
+  float xRadius = (widthEllipse/2);
+  float yRadius = (heightEllipse/2);
+  float centreX = _xPosScene + 0.5 * _widthScene;
+  float centreY = _yPosScene + 0.5 * _heightScene;
+  
+  float point1X = centreX - getXCoordinateEllipseAngleRight(xRadius, yRadius, 90*PI/180 );
+  float point1Y = centreY - getYCoordinateEllipseAngleRight(xRadius, yRadius, 90*PI/180);
+  stroke(#FF0000);
+  point(point1X, point1Y);
+  
+  float point2X = centreX + getXCoordinateEllipseAngleLeft(xRadius, yRadius, 234*PI/180);
+  float point2Y = centreY + getYCoordinateEllipseAngleLeft(xRadius, yRadius, 234*PI/180);
+  stroke(#00FF00);
+  point(point2X, point2Y);
+  
+  float point3X = centreX - getXCoordinateEllipseAngleRight(xRadius, yRadius, 18*PI/180);
+  float point3Y = centreY - getYCoordinateEllipseAngleRight(xRadius, yRadius, 18*PI/180);
+  stroke(#0000FF);
+  point(point3X, point3Y);
+  
+  float point4X = centreX + getXCoordinateEllipseAngleLeft(xRadius, yRadius, 162*PI/180);
+  float point4Y = centreY - getYCoordinateEllipseAngleLeft(xRadius, yRadius, 162*PI/180);
+  stroke(#FF00FF);
+  point(point4X, point4Y);
+  
+  float point5X = centreX - getXCoordinateEllipseAngleRight(xRadius, yRadius, 306*PI/180);
+  float point5Y = centreY - getYCoordinateEllipseAngleRight(xRadius, yRadius, 306*PI/180);
+  stroke(#00FFFF);
+  point(point5X, point5Y);
+  
+  
+}
+
+
+float getXCoordinateEllipseAngleRight(float _a, float _b, float _angle)
+{
+  return (_a*_b)/sqrt(sq(_a)+(sq(_b)*sq(tan(_angle))));
+}
+
+float getYCoordinateEllipseAngleRight(float _a, float _b, float _angle)
+{
+  return (_a*_b*tan(_angle))/sqrt(sq(_a)+(sq(_b)*sq(tan(_angle))));
+}
+
+float getXCoordinateEllipseAngleLeft(float _a, float _b, float _angle)
+{
+  return -getXCoordinateEllipseAngleRight(_a, _b, _angle);
+}
+
+float getYCoordinateEllipseAngleLeft(float _a, float _b, float _angle)
+{
+  return -getYCoordinateEllipseAngleRight(_a, _b, _angle);
 }
