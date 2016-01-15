@@ -16,7 +16,7 @@ void setup()
   drawPlusSign(getTilePosX(0), getTilePosY(0), tileWidth, tileHeight, 0.125, 0.5, 0.5, 0.125, secondaryColour, 0.5, 0.5);
   drawCrossSign(getTilePosX(2), getTilePosY(0), tileWidth, tileHeight, 0.25, 0.25, 0.75, 0.75, 0.125, secondaryColour);
   drawStackedLine(getTilePosX(1), getTilePosY(1), tileWidth, tileHeight, 5, 0.8, secondaryColour);
-  drawLinesOfEllipses(getTilePosX(3), getTilePosY(1), tileWidth, tileHeight, 3, 3, 16, 16, secondaryColour);  
+  drawLinesOfEllipses(getTilePosX(3), getTilePosY(1), tileWidth, tileHeight, 3, 3, secondaryColour);  
   drawRecursiveCheckerboard(getTilePosX(3), getTilePosY(3), tileWidth, tileHeight, tileCountX, tileCountY, primaryColour, secondaryColour, 3, 3);
 }
 
@@ -35,7 +35,7 @@ int getTilePosY(int _tileNumberY)
 /// @param[in] _xPosScene The x position of the top-left corner of the rectangle of the scene.
 /// @param[in] _yPosScene The y position of the top-left corner of the rectangle of the scene.
 /// @param[in] _widthScene The width of the rectangle of the scene.
-/// @param[in] _heightScene The _heightScene of the rectangle of the scene.
+/// @param[in] _heightScene The height of the rectangle of the scene.
 /// @param[in] _tileCountX The quantity of horizontal tile of the checkerboard.
 /// @param[in] _tileCountY The quantity of vertical tile of the checkerboard.
 /// @param[in] _colour1 The first colour to use for the checkboard pattern.
@@ -69,7 +69,7 @@ void drawCheckerboard(float _xPosScene, float _yPosScene, float _widthScene, flo
 /// @param[in] _xPosScene The x position of the top-left corner of the rectangle of the scene.
 /// @param[in] _yPosScene The y position of the top-left corner of the rectangle of the scene.
 /// @param[in] _widthScene The width of the rectangle of the scene.
-/// @param[in] _heightScene The _heightScene of the rectangle of the scene.
+/// @param[in] _heightScene The height of the rectangle of the scene.
 /// @param[in] _tileCountX The quantity of horizontal tile of the checkerboard.
 /// @param[in] _tileCountY The quantity of vertical tile of the checkerboard.
 /// @param[in] _colour1 The first colour to use for the checkboard pattern.
@@ -94,7 +94,7 @@ void drawRecursiveCheckerboard(float _xPosScene, float _yPosScene, float _widthS
 /// @param[in] _xPosScene The x position of the top-left corner of the rectangle of the scene.
 /// @param[in] _yPosScene The y position of the top-left corner of the rectangle of the scene.
 /// @param[in] _widthScene The width of the rectangle of the scene.
-/// @param[in] _heightScene The _heightScene of the rectangle of the scene.
+/// @param[in] _heightScene The height of the rectangle of the scene.
 /// @param[in] _widthRatioVerticalArm Number between 0 and 1 reprensentating the percentage of the scene used by the width of the vertical arm of the +.
 /// @param[in] _heightRatioVerticalArm Number between 0 and 1 reprensentating the percentage of the scene used by the height of the vertical arm of the +.
 /// @param[in] _widthRatioHorizontalArm Number between 0 and 1 reprensentating the percentage of the scene used by the width of the horizontal arm of the +.
@@ -129,7 +129,7 @@ void drawPlusSign(float _xPosScene, float _yPosScene, float _widthScene, float _
 /// @param[in] _xPosScene The x position of the top-left corner of the rectangle of the scene.
 /// @param[in] _yPosScene The y position of the top-left corner of the rectangle of the scene.
 /// @param[in] _widthScene The width of the rectangle of the scene.
-/// @param[in] _heightScene The _heightScene of the rectangle of the scene.
+/// @param[in] _heightScene The height of the rectangle of the scene.
 /// @param[in] _ratioXBegin Number between 0 and 1 reprensentating the percentage of the scene where the top-left of the sign X coordinate is.
 /// @param[in] _ratioYBegin Number between 0 and 1 reprensentating the percentage of the scene where the top-left of the sign Y coordinate is.
 /// @param[in] _ratioXEnd Number between 0 and 1 reprensentating the percentage of the scene where the bottom-right of the sign X coordinate is.
@@ -146,14 +146,22 @@ void drawCrossSign(float _xPosScene, float _yPosScene, float _widthScene, float 
   line(_xPosScene + (_ratioXEnd * _widthScene), _yPosScene + (_ratioYBegin * _heightScene), _xPosScene + (_ratioXBegin * _widthScene), _yPosScene + (_ratioYEnd * _heightScene));
 }
 
-void drawStackedLine(float _xPosScene, float _yPosScene, float _widthScene, float _heightScene, int halfNumberOfLine, float ratioWidthLine, color _colour)
+/// Draws a stack of lines where the middle one is the smallest and the outer one grows at a fibonacci rate.
+/// @param[in] _xPosScene The x position of the top-left corner of the rectangle of the scene.
+/// @param[in] _yPosScene The y position of the top-left corner of the rectangle of the scene.
+/// @param[in] _widthScene The width of the rectangle of the scene.
+/// @param[in] _heightScene The height of the rectangle of the scene.
+/// @param[in] _halfNumberOfLine The number of line from the middle to the top. It must be odd.
+/// @param[in] _ratioWidthLine Number between 0 and 1 representation the ratio of the width of the line.
+/// @param[in] _colour The colour of the lines.
+void drawStackedLine(float _xPosScene, float _yPosScene, float _widthScene, float _heightScene, int _halfNumberOfLine, float _ratioWidthLine, color _colour)
 {
   noStroke();
   fill(_colour);
-  float lineWidth = ratioWidthLine * _widthScene;
-  float linePosX = _xPosScene + (((1-ratioWidthLine)/2) * _widthScene);
+  float lineWidth = _ratioWidthLine * _widthScene;
+  float linePosX = _xPosScene + (((1-_ratioWidthLine)/2) * _widthScene);
 
-  float linePosYDelta = _heightScene/(halfNumberOfLine*2+0.5);
+  float linePosYDelta = _heightScene/(_halfNumberOfLine*2+0.5);
 
   float centreY = _yPosScene + (0.5  * _heightScene);
 
@@ -162,7 +170,7 @@ void drawStackedLine(float _xPosScene, float _yPosScene, float _widthScene, floa
   float lineHeightB = lineHeightA;
 
   rect(linePosX, centreY, lineWidth, lineHeightB); 
-  for (int i = 1; i < halfNumberOfLine; i++)
+  for (int i = 1; i < _halfNumberOfLine; i++)
   {
     float lineHeightTemp = lineHeightA;
     lineHeightA = lineHeightB;
@@ -174,23 +182,33 @@ void drawStackedLine(float _xPosScene, float _yPosScene, float _widthScene, floa
   }
 }
 
-void drawLinesOfEllipses(float _xPosScene, float _yPosScene, float _widthScene, float _heightScene, int _lineCount, int _ellipsesCountPerLine, float _ellipseWidth, float _ellipseHeight, color _colour) 
+/// Draws a stack of lines of ellipses with an alternating pattern.
+/// @param[in] _xPosScene The x position of the top-left corner of the rectangle of the scene.
+/// @param[in] _yPosScene The y position of the top-left corner of the rectangle of the scene.
+/// @param[in] _widthScene The width of the rectangle of the scene.
+/// @param[in] _heightScene The height of the rectangle of the scene.
+/// @param[in] _lineCount The number of line.
+/// @param[in] _ellipsesCountPerLineThe number of ellipsePerLine.
+/// @param[in] _colour The colour of the ellipses.
+void drawLinesOfEllipses(float _xPosScene, float _yPosScene, float _widthScene, float _heightScene, int _lineCount, int _ellipsesCountPerLine, color _colour) 
 {
   noStroke();
   fill(_colour);
   float lineDelta = _heightScene / (_lineCount+1);
   float columnDelta = _widthScene / (_ellipsesCountPerLine+1);
+  float ellipseWidth = columnDelta / 2;
+  float ellipseHeight = lineDelta / 2;
   for (int line = 0; line < _lineCount; line++)
   {
     float posY =  _yPosScene + lineDelta * (line+1);
     for (int i = 0; i < _ellipsesCountPerLine; i++)
     {
-      float posX = _xPosScene + (i+1)*columnDelta - _ellipseWidth/2;
+      float posX = _xPosScene + (i+1)*columnDelta - ellipseWidth/2;
       if (line % 2 == 0)
       {
-        posX = posX + _ellipseWidth;
+        posX = posX + ellipseWidth;
       }
-      ellipse(posX, posY, _ellipseWidth, _ellipseHeight);
+      ellipse(posX, posY, ellipseWidth, ellipseHeight);
     }
   }
 }
