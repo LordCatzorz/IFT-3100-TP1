@@ -7,7 +7,7 @@ int tileCountY = 4;
 
 void setup()
 {
-  size(512, 512);
+  size(1024, 1024);
   drawCheckerboard(0, 0, width, height, tileCountX, tileCountY, primaryColour, secondaryColour);
 
   float tileWidth = width/tileCountX;
@@ -16,7 +16,8 @@ void setup()
   drawPlusSign(getTilePosX(0), getTilePosY(0), tileWidth, tileHeight, 0.125, 0.5, 0.5, 0.125, secondaryColour, 0.5, 0.5);
   drawCrossSign(getTilePosX(2), getTilePosY(0), tileWidth, tileHeight, 0.25, 0.25, 0.75, 0.75, 0.125, secondaryColour);
   drawStackedLine(getTilePosX(1), getTilePosY(1), tileWidth, tileHeight, 5, 0.8, secondaryColour);
-  drawLinesOfEllipses(getTilePosX(3), getTilePosY(1), tileWidth, tileHeight, 3, 3, secondaryColour);  
+  drawLinesOfEllipses(getTilePosX(3), getTilePosY(1), tileWidth, tileHeight, 3, 3, secondaryColour); 
+  drawTarget(getTilePosX(0), getTilePosY(2), tileWidth, tileHeight, 0.9, 0.9, 14, secondaryColour, primaryColour); 
   drawRecursiveCheckerboard(getTilePosX(3), getTilePosY(3), tileWidth, tileHeight, tileCountX, tileCountY, primaryColour, secondaryColour, 3, 3);
 }
 
@@ -210,5 +211,37 @@ void drawLinesOfEllipses(float _xPosScene, float _yPosScene, float _widthScene, 
       }
       ellipse(posX, posY, ellipseWidth, ellipseHeight);
     }
+  }
+}
+
+
+/// Draws a target
+/// @param[in] _xPosScene The x position of the top-left corner of the rectangle of the scene.
+/// @param[in] _yPosScene The y position of the top-left corner of the rectangle of the scene.
+/// @param[in] _widthScene The width of the rectangle of the scene.
+/// @param[in] _heightScene The height of the rectangle of the scene.
+/// @param[in] _widthOfLargestEllipse Number between 0 and 9 determining the ratio of the width taken by then bigest ellipse.
+/// @param[in] _heightOfLargestEllipse Number between 0 and 9 determining the ratio of the height taken by then bigest ellipse.
+/// @param[in] _ellipseCount The number of ellipses.
+/// @param[in] _colour The first colour to use for the target pattern.
+/// @param[in] _colour The altenate colour to use for the target pattern.
+void drawTarget(float _xPosScene, float _yPosScene, float _widthScene, float _heightScene, float _widthOfLargestEllipse, float _heightOfLargestEllipse, int _ellipseCount, color _colour1, color _colour2)
+{
+  noStroke();
+  for (int i = 0; i < _ellipseCount; i++) //<>//
+  {
+    if (i % 2 == 0)
+    {
+      fill(_colour1);
+    }
+    else
+    {
+      fill(_colour2);
+    }
+    float posX = _xPosScene + (0.5 * _widthScene);
+    float posY = _yPosScene + (0.5 * _heightScene);
+    float widthEllipse = (_widthOfLargestEllipse-(i*(0.87/_ellipseCount))) *_widthScene;
+    float heightEllipse = (_heightOfLargestEllipse-(i*(0.87/_ellipseCount)))*_heightScene;
+    ellipse(posX, posY, widthEllipse, heightEllipse);
   }
 }
