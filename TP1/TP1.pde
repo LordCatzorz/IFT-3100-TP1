@@ -1,4 +1,4 @@
-color primaryColour = color(255, 255, 255); //<>// //<>// //<>//
+color primaryColour = color(255, 255, 255); //<>// //<>// //<>// //<>//
 color secondaryColour = color(0, 0, 0);
 color debugColour = color(255, 0, 0);
 
@@ -15,7 +15,7 @@ void setup()
 
   drawPlusSign(getTilePosX(0), getTilePosY(0), tileWidth, tileHeight, 0.125, 0.5, 0.5, 0.125, secondaryColour, 0.5, 0.5);
   drawCrossSign(getTilePosX(2), getTilePosY(0), tileWidth, tileHeight, 0.25, 0.25, 0.75, 0.75, 0.125, secondaryColour);
-  drawStackedLine(getTilePosX(1), getTilePosY(1), tileWidth, tileHeight, secondaryColour);
+  drawStackedLine(getTilePosX(1), getTilePosY(1), tileWidth, tileHeight, 5, 0.8, secondaryColour);
   drawRecursiveCheckerboard(getTilePosX(3), getTilePosY(3), tileWidth, tileHeight, tileCountX, tileCountY, primaryColour, secondaryColour, 3, 3);
 }
 
@@ -145,48 +145,30 @@ void drawCrossSign(float _xPosScene, float _yPosScene, float _widthScene, float 
   line(_xPosScene + (_ratioXEnd * _widthScene), _yPosScene + (_ratioYBegin * _heightScene), _xPosScene + (_ratioXBegin * _widthScene), _yPosScene + (_ratioYEnd * _heightScene));
 }
 
-void drawStackedLine(float _xPosScene, float _yPosScene, float _widthScene, float _heightScene, color _colour)
+void drawStackedLine(float _xPosScene, float _yPosScene, float _widthScene, float _heightScene, int halfNumberOfLine, float ratioWidthLine, color _colour)
 {
   noStroke();
   fill(_colour);
-  float lineWidth = 0.8 * _widthScene;
-  float linePosX = _xPosScene + (0.1 * _widthScene);
+  float lineWidth = ratioWidthLine * _widthScene;
+  float linePosX = _xPosScene + (((1-ratioWidthLine)/2) * _widthScene);
 
-  float linePosYDelta = 128/10.5;
+  float linePosYDelta = _heightScene/(halfNumberOfLine*2+0.5);
 
-  float line5Height = _heightScene / 128;
-  float line4Height = line5Height + line5Height;
-  float line3Height = line4Height + line5Height;
-  float line2Height = line3Height + line4Height;
-  float line1Height = line2Height + line3Height;
-
-
-
-  float line5PosY = _yPosScene + (0.5  * _heightScene);
-
-  float line4PosY = line5PosY - 1 * linePosYDelta - line4Height/2;
-
-  float line3PosY = line5PosY - 2 *linePosYDelta - line3Height/2;
-
-  float line2PosY = line5PosY - 3 *linePosYDelta - line2Height/2;
-
-  float line1PosY = line5PosY - 4 *linePosYDelta - line1Height/2;
-
-  float line6PosY = line5PosY + 1 *linePosYDelta - line4Height/2;
-
-  float line7PosY = line5PosY + 2 *linePosYDelta - line3Height/2;
-
-  float line8PosY = line5PosY + 3 *linePosYDelta - line2Height/2;
-
-  float line9PosY = line5PosY + 4 *linePosYDelta - line1Height/2;
-
-  rect(linePosX, line1PosY, lineWidth, line1Height);
-  rect(linePosX, line2PosY, lineWidth, line2Height);
-  rect(linePosX, line3PosY, lineWidth, line3Height);
-  rect(linePosX, line4PosY, lineWidth, line4Height);
-  rect(linePosX, line5PosY, lineWidth, line5Height);
-  rect(linePosX, line6PosY, lineWidth, line4Height);
-  rect(linePosX, line7PosY, lineWidth, line3Height);
-  rect(linePosX, line8PosY, lineWidth, line2Height);
-  rect(linePosX, line9PosY, lineWidth, line1Height);
+  float centreY = _yPosScene + (0.5  * _heightScene);
+  
+  //Variable for fibonacci
+  float lineHeightA= _heightScene / _heightScene;
+  float lineHeightB = lineHeightA;
+  
+  rect(linePosX, centreY, lineWidth, lineHeightB); 
+  for (int i = 1; i < halfNumberOfLine; i++)
+  {
+    float lineHeightTemp = lineHeightA;
+    lineHeightA = lineHeightB;
+    lineHeightB = lineHeightB + lineHeightTemp;
+    float lineTopPosY = centreY - i * linePosYDelta - lineHeightB/2;
+    float lineBottomPosY = centreY + i * linePosYDelta - lineHeightB/2;
+    rect(linePosX, lineTopPosY, lineWidth, lineHeightB); 
+    rect(linePosX, lineBottomPosY, lineWidth, lineHeightB);
+  }
 }
