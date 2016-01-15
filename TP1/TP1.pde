@@ -16,6 +16,7 @@ void setup()
   drawPlusSign(getTilePosX(0), getTilePosY(0), tileWidth, tileHeight, 0.125, 0.5, 0.5, 0.125, secondaryColour, 0.5, 0.5);
   drawCrossSign(getTilePosX(2), getTilePosY(0), tileWidth, tileHeight, 0.25, 0.25, 0.75, 0.75, 0.125, secondaryColour);
   drawStackedLine(getTilePosX(1), getTilePosY(1), tileWidth, tileHeight, 5, 0.8, secondaryColour);
+  drawLinesOfEllipses(getTilePosX(3), getTilePosY(1), tileWidth, tileHeight, 3, 3, 16, 16, secondaryColour);  
   drawRecursiveCheckerboard(getTilePosX(3), getTilePosY(3), tileWidth, tileHeight, tileCountX, tileCountY, primaryColour, secondaryColour, 3, 3);
 }
 
@@ -155,11 +156,11 @@ void drawStackedLine(float _xPosScene, float _yPosScene, float _widthScene, floa
   float linePosYDelta = _heightScene/(halfNumberOfLine*2+0.5);
 
   float centreY = _yPosScene + (0.5  * _heightScene);
-  
+
   //Variable for fibonacci
   float lineHeightA= _heightScene / _heightScene;
   float lineHeightB = lineHeightA;
-  
+
   rect(linePosX, centreY, lineWidth, lineHeightB); 
   for (int i = 1; i < halfNumberOfLine; i++)
   {
@@ -170,5 +171,26 @@ void drawStackedLine(float _xPosScene, float _yPosScene, float _widthScene, floa
     float lineBottomPosY = centreY + i * linePosYDelta - lineHeightB/2;
     rect(linePosX, lineTopPosY, lineWidth, lineHeightB); 
     rect(linePosX, lineBottomPosY, lineWidth, lineHeightB);
+  }
+}
+
+void drawLinesOfEllipses(float _xPosScene, float _yPosScene, float _widthScene, float _heightScene, int _lineCount, int _ellipsesCountPerLine, float _ellipseWidth, float _ellipseHeight, color _colour) 
+{
+  noStroke();
+  fill(_colour);
+  float lineDelta = _heightScene / (_lineCount+1);
+  float columnDelta = _widthScene / (_ellipsesCountPerLine+1);
+  for (int line = 0; line < _lineCount; line++)
+  {
+    float posY =  _yPosScene + lineDelta * (line+1);
+    for (int i = 0; i < _ellipsesCountPerLine; i++)
+    {
+      float posX = _xPosScene + (i+1)*columnDelta - _ellipseWidth/2;
+      if (line % 2 == 0)
+      {
+        posX = posX + _ellipseWidth;
+      }
+      ellipse(posX, posY, _ellipseWidth, _ellipseHeight);
+    }
   }
 }
