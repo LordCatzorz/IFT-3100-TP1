@@ -1,4 +1,4 @@
-color primaryColour = color(255, 255, 255); //<>// //<>// //<>// //<>//
+color primaryColour = color(255, 255, 255); //<>// //<>// //<>// //<>// //<>// //<>// //<>// //<>// //<>//
 color secondaryColour = color(0, 0, 0);
 color debugColour = color(255, 0, 0);
 
@@ -8,6 +8,11 @@ int tileCountY = 4;
 void setup()
 {
   size(512, 512);
+  surface.setResizable(true);
+}
+
+void draw()
+{
   drawCheckerboard(0, 0, width, height, tileCountX, tileCountY, primaryColour, secondaryColour);
 
   float tileWidth = width/tileCountX;
@@ -18,8 +23,8 @@ void setup()
   drawStackedLine(getTilePosX(1), getTilePosY(1), tileWidth, tileHeight, 5, 0.8, secondaryColour);
   drawLinesOfEllipses(getTilePosX(3), getTilePosY(1), tileWidth, tileHeight, 3, 3, secondaryColour); 
   drawTarget(getTilePosX(0), getTilePosY(2), tileWidth, tileHeight, 0.9, 0.9, 14, secondaryColour, primaryColour); 
-  drawInfinitySign(getTilePosX(2), getTilePosY(2), tileWidth, tileHeight, 0.8, 0.3, secondaryColour); 
-  drawStar(getTilePosX(1), getTilePosY(3), tileWidth, tileHeight, 0.8, 0.8, 0.125, secondaryColour);
+  drawInfinitySign(getTilePosX(2), getTilePosY(2), tileWidth, tileHeight, 0.8, 0.3, 0.2, 0.025, debugColour); 
+  drawStar(getTilePosX(1), getTilePosY(3), tileWidth, tileHeight, 0.8, 0.8, 90, 0.03, secondaryColour);
   drawRecursiveCheckerboard(getTilePosX(3), getTilePosY(3), tileWidth, tileHeight, tileCountX, tileCountY, primaryColour, secondaryColour, 3, 3);
 }
 
@@ -81,10 +86,9 @@ void drawCheckerboard(float _xPosScene, float _yPosScene, float _widthScene, flo
 /// @param[in] _recursiveTileY The number of the horizontal tile in which the checkboard recursivity will happen. Starts at 0;
 void drawRecursiveCheckerboard(float _xPosScene, float _yPosScene, float _widthScene, float _heightScene, int _tileCountX, int _tileCountY, color _colour1, color _colour2, int _recursiveTileX, int _recursiveTileY)
 {
-
-  drawCheckerboard(_xPosScene, _yPosScene, _widthScene, _heightScene, _tileCountX, _tileCountY, _colour1, _colour2);
-  if (_widthScene > 0 && _heightScene > 0)
+  if (_widthScene > _tileCountX && _heightScene > _tileCountY)
   {
+    drawCheckerboard(_xPosScene, _yPosScene, _widthScene, _heightScene, _tileCountX, _tileCountY, _colour1, _colour2);
     float widthOfTile = _widthScene / _tileCountX;
     float heightOfTile = _heightScene / _tileCountY;
     float xPosNextTile = _xPosScene + (_recursiveTileX * (widthOfTile));
@@ -222,21 +226,20 @@ void drawLinesOfEllipses(float _xPosScene, float _yPosScene, float _widthScene, 
 /// @param[in] _yPosScene The y position of the top-left corner of the rectangle of the scene.
 /// @param[in] _widthScene The width of the rectangle of the scene.
 /// @param[in] _heightScene The height of the rectangle of the scene.
-/// @param[in] _widthOfLargestEllipse Number between 0 and 9 determining the ratio of the width taken by then bigest ellipse.
-/// @param[in] _heightOfLargestEllipse Number between 0 and 9 determining the ratio of the height taken by then bigest ellipse.
+/// @param[in] _widthOfLargestEllipse Number between 0 and 1 determining the ratio of the width taken by then bigest ellipse.
+/// @param[in] _heightOfLargestEllipse Number between 0 and 1 determining the ratio of the height taken by then bigest ellipse.
 /// @param[in] _ellipseCount The number of ellipses.
-/// @param[in] _colour The first colour to use for the target pattern.
-/// @param[in] _colour The altenate colour to use for the target pattern.
+/// @param[in] _colour1 The first colour to use for the target pattern.
+/// @param[in] _colour2 The altenate colour to use for the target pattern.
 void drawTarget(float _xPosScene, float _yPosScene, float _widthScene, float _heightScene, float _widthOfLargestEllipse, float _heightOfLargestEllipse, int _ellipseCount, color _colour1, color _colour2)
 {
   noStroke();
-  for (int i = 0; i < _ellipseCount; i++) //<>//
+  for (int i = 0; i < _ellipseCount; i++)
   {
     if (i % 2 == 0)
     {
       fill(_colour1);
-    }
-    else
+    } else
     {
       fill(_colour2);
     }
@@ -248,69 +251,94 @@ void drawTarget(float _xPosScene, float _yPosScene, float _widthScene, float _he
   }
 }
 
-
-void  drawInfinitySign(float _xPosScene, float _yPosScene, float _widthScene, float _heightScene, float _ratioWidthInfinity, float _ratioHeightInfinity, color _colour)
-{
-}
-
-void  drawStar(float _xPosScene, float _yPosScene, float _widthScene, float _heightScene, float _ratioWidthStar, float _ratioHeightStar, float _strokeRatio, color _colour)
+/// Draws an infinity sign by following the rule of a lemniscate of Bernoulli
+/// @param[in] _xPosScene The x position of the top-left corner of the rectangle of the scene.
+/// @param[in] _yPosScene The y position of the top-left corner of the rectangle of the scene.
+/// @param[in] _widthScene The width of the rectangle of the scene.
+/// @param[in] _heightScene The height of the rectangle of the scene.
+/// @param[in] _ratioWidthInfinity Number between 0 and 1 determining the ratio of the width taken by the lemniscate.
+/// @param[in] _ratioHeightInfinity Number between 0 and 1 determining the ratio of the height taken by the lemniscate (Not yet implemented).
+/// @param[in] _anglePrecison The precision to calculate the coordinate of the lemniscate.
+/// @param[in] _strokeRatio Number between 0 and 1 reprensentating the percentage of the scene a stroke use.
+/// @param[in] _colour The colour of the lemniscate.
+/// @todo Find a way to make the height of the loop proportional to the size of the scene.
+void  drawInfinitySign(float _xPosScene, float _yPosScene, float _widthScene, float _heightScene, float _ratioWidthInfinity, float _ratioHeightInfinity, float _anglePrecison, float _strokeRatio, color _colour)
 {
   noFill();
   stroke(_colour);
   strokeWeight(sqrt(_widthScene * _heightScene) * _strokeRatio);
-  
+  float centreX = _xPosScene + 0.5 * _widthScene;
+  float centreY = _yPosScene + 0.5 * _heightScene;
+  float a = (_widthScene*_ratioWidthInfinity)-g.strokeWeight;
+  float diff = 0.1;
+  for (float x = -a-diff; x < a+diff; x = x + _anglePrecison)
+  {
+     
+      float y1 = sqrt(sqrt(sq(a)*(sq(a)+8*sq(x)))-sq(a)-2*(sq(x)))/sqrt(2)*0.5;
+      float y2 = -sqrt(sqrt(sq(a)*(sq(a)+8*sq(x)))-sq(a)-2*(sq(x)))/sqrt(2)*0.5;
+      
+      //stroke(#FF0000);
+      ellipse(centreX + (x*0.5), centreY + y1, g.strokeWeight,g.strokeWeight);
+      //line (centreX + (x*0.5) , centreY + y1,centreX + (x*0.5), centreY + y1);
+      //stroke(#00FF00);
+      ellipse(centreX + (x*0.5), centreY + y2, g.strokeWeight,g.strokeWeight);
+      //line(centreX + (x*0.5), centreY + y2, centreX + (x*0.5), centreY + y2);
+  }
+}
+
+/// Draws a five pointed star
+/// @param[in] _xPosScene The x position of the top-left corner of the rectangle of the scene.
+/// @param[in] _yPosScene The y position of the top-left corner of the rectangle of the scene.
+/// @param[in] _widthScene The width of the rectangle of the scene.
+/// @param[in] _heightScene The height of the rectangle of the scene.
+/// @param[in] _ratioWidthStar Number between 0 and 1 determining the ratio of the width taken by the ellipse that could be drawn connecting each point.
+/// @param[in] _ratioHeightStar Number between 0 and 1 determining the ratio of the height taken by the ellipse that could be drawn connecting each point.
+/// @param[in] _angleFirstPoint The angle between 0 and 360 where the first point of the star should be drawn.
+/// @param[in] _strokeRatio Number between 0 and 1 reprensentating the percentage of the scene a stroke use.
+/// @param[in] _colour The colour of the star.
+void  drawStar(float _xPosScene, float _yPosScene, float _widthScene, float _heightScene, float _ratioWidthStar, float _ratioHeightStar, float _angleFirstPoint, float _strokeRatio, color _colour)
+{
+  noFill();
+  stroke(_colour);
+  strokeWeight(sqrt(_widthScene * _heightScene) * _strokeRatio);
+  int pointCount = 5;
   float heightEllipse = _ratioHeightStar * _heightScene;
   float widthEllipse = _ratioWidthStar * _widthScene;
   float xRadius = (widthEllipse/2);
   float yRadius = (heightEllipse/2);
   float centreX = _xPosScene + 0.5 * _widthScene;
   float centreY = _yPosScene + 0.5 * _heightScene;
-  
-  float point1X = centreX - getXCoordinateEllipseAngleRight(xRadius, yRadius, 90*PI/180 );
-  float point1Y = centreY - getYCoordinateEllipseAngleRight(xRadius, yRadius, 90*PI/180);
-  stroke(#FF0000);
-  point(point1X, point1Y);
-  
-  float point2X = centreX + getXCoordinateEllipseAngleLeft(xRadius, yRadius, 234*PI/180);
-  float point2Y = centreY + getYCoordinateEllipseAngleLeft(xRadius, yRadius, 234*PI/180);
-  stroke(#00FF00);
-  point(point2X, point2Y);
-  
-  float point3X = centreX - getXCoordinateEllipseAngleRight(xRadius, yRadius, 18*PI/180);
-  float point3Y = centreY - getYCoordinateEllipseAngleRight(xRadius, yRadius, 18*PI/180);
-  stroke(#0000FF);
-  point(point3X, point3Y);
-  
-  float point4X = centreX + getXCoordinateEllipseAngleLeft(xRadius, yRadius, 162*PI/180);
-  float point4Y = centreY - getYCoordinateEllipseAngleLeft(xRadius, yRadius, 162*PI/180);
-  stroke(#FF00FF);
-  point(point4X, point4Y);
-  
-  float point5X = centreX - getXCoordinateEllipseAngleRight(xRadius, yRadius, 306*PI/180);
-  float point5Y = centreY - getYCoordinateEllipseAngleRight(xRadius, yRadius, 306*PI/180);
-  stroke(#00FFFF);
-  point(point5X, point5Y);
-  
-  
+
+  float angle = _angleFirstPoint;
+  float point1X = centreX + getXCoordinateEllipseAngle(xRadius, angle);
+  float point1Y = centreY + getYCoordinateEllipseAngle(yRadius, angle);
+  for (int i = 0; i < pointCount; i = i+1)
+  {
+    angle = angle + 2*(360/pointCount);
+    
+    float point2X = centreX + getXCoordinateEllipseAngle(xRadius, angle);
+    float point2Y = centreY + getYCoordinateEllipseAngle(yRadius, angle);   
+    line(point1X, point1Y, point2X, point2Y);
+    point1X = point2X;
+    point1Y = point2Y;
+  }
+
 }
 
-
-float getXCoordinateEllipseAngleRight(float _a, float _b, float _angle)
+/// Gives the x coordinate of a point on a given angle of the ellipse.
+/// @param[in] _radiusX The horizontal lenght of the central point of the ellipse and border.
+/// @param[in] _angle The angle of the desired point, between 0 and 360.
+/// @return The x coordinate of the point.
+float getXCoordinateEllipseAngle(float _radiusX,float _angle)
 {
-  return (_a*_b)/sqrt(sq(_a)+(sq(_b)*sq(tan(_angle))));
+  return -_radiusX * cos( (_angle - 180) *PI /180);
 }
 
-float getYCoordinateEllipseAngleRight(float _a, float _b, float _angle)
+/// Gives the y coordinate of a point on a given angle of the ellipse.
+/// @param[in] _radiusY The vertical lenght of the central point of the ellipse and border.
+/// @param[in] _angle The angle of the desired point, between 0 and 360.
+/// @return The y coordinate of the point.
+float getYCoordinateEllipseAngle(float _radiusY, float _angle)
 {
-  return (_a*_b*tan(_angle))/sqrt(sq(_a)+(sq(_b)*sq(tan(_angle))));
-}
-
-float getXCoordinateEllipseAngleLeft(float _a, float _b, float _angle)
-{
-  return -getXCoordinateEllipseAngleRight(_a, _b, _angle);
-}
-
-float getYCoordinateEllipseAngleLeft(float _a, float _b, float _angle)
-{
-  return -getYCoordinateEllipseAngleRight(_a, _b, _angle);
+   return _radiusY * sin( (_angle - 180) *PI /180);
 }
