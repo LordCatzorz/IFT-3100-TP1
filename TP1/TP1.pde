@@ -2,16 +2,38 @@ color primaryColour = color(255, 255, 255); //<>// //<>// //<>// //<>// //<>// /
 color secondaryColour = color(0, 0, 0);
 color debugColour = color(255, 0, 0);
 
+int frameSize = 512;
+int frameGrowing = -1;
+
 int tileCountX = 4;
 int tileCountY = 4;
 
 void setup()
 {
   size(512, 512);
-  surface.setResizable(true);
+  //frameRate(60);
+  //surface.setResizable(true);
+  update();
 }
-
+void exit()
+{
+  //save("IFT3100H16_TP1.png");
+}
 void draw()
+{
+  update();
+  //surface.setSize(frameSize, frameSize);
+  frameSize = frameSize + frameGrowing;
+  if (frameSize > 800)
+  {
+    frameGrowing = -1;
+  }
+  else if (frameSize < 10)
+  {
+    frameGrowing = 1;
+  }
+}
+void update()
 {
   drawCheckerboard(0, 0, width, height, tileCountX, tileCountY, primaryColour, secondaryColour);
 
@@ -23,10 +45,14 @@ void draw()
   drawStackedLine(getTilePosX(1), getTilePosY(1), tileWidth, tileHeight, 5, 0.8, secondaryColour);
   drawLinesOfEllipses(getTilePosX(3), getTilePosY(1), tileWidth, tileHeight, 3, 3, secondaryColour); 
   drawTarget(getTilePosX(0), getTilePosY(2), tileWidth, tileHeight, 0.9, 0.9, 14, secondaryColour, primaryColour); 
-  drawInfinitySign(getTilePosX(2), getTilePosY(2), tileWidth, tileHeight, 0.8, 0.3, 0.2, 0.025, debugColour); 
   drawStar(getTilePosX(1), getTilePosY(3), tileWidth, tileHeight, 0.8, 0.8, 90, 0.03, secondaryColour);
   drawRecursiveCheckerboard(getTilePosX(3), getTilePosY(3), tileWidth, tileHeight, tileCountX, tileCountY, primaryColour, secondaryColour, 3, 3);
+  drawInfinitySign(getTilePosX(2), getTilePosY(2), tileWidth, tileHeight, 0.8, 0.3, 0.2, 0.025, secondaryColour); 
+  
+  
 }
+
+
 
 /// Get the x coordinate of the top-left corner of a tile position given. Starts at 0.
 int getTilePosX(int _tileNumberX)
