@@ -39,11 +39,11 @@ void update()
   float tileWidth = width/tileCountX;
   float tileHeight =  height/tileCountY;
 
-  drawPlusSign(getTilePosX(0), getTilePosY(0), tileWidth, tileHeight, 0.125, 0.5, 0.5, 0.125, secondaryColour, (64.5/127.0), (64.5/127.0));
+  drawPlusSign(getTilePosX(0), getTilePosY(0), tileWidth, tileHeight, 0.125, 0.5, 0.5, 0.125, secondaryColour, (64.5/128.0), (64.5/128.0));
   drawCrossSign(getTilePosX(2), getTilePosY(0), tileWidth, tileHeight, 0.25, 0.25, 0.75, 0.75, 0.125, secondaryColour);
-  drawStackedLine(getTilePosX(1), getTilePosY(1), tileWidth, tileHeight, 103.0/128.0, 0.9375, 5, secondaryColour, 64.5/128.0, 0.5);
+  drawStackedLine(getTilePosX(1), getTilePosY(1), tileWidth, tileHeight, 103.0/128.0, 0.9375, 5, secondaryColour, 0.5, (63.5/128.0));
   drawLinesOfEllipses(getTilePosX(3), getTilePosY(1), tileWidth, tileHeight, 3, 3, secondaryColour); 
-  drawTarget(getTilePosX(0), getTilePosY(2), tileWidth, tileHeight, 0.9, 0.9, 14, secondaryColour, primaryColour); 
+  drawTarget(getTilePosX(0), getTilePosY(2), tileWidth, tileHeight, (116.0/128.0), (116.0/128.0), 14, secondaryColour, primaryColour, (64.5/128.0), (64.5/128.0)); 
   drawStar(getTilePosX(1), getTilePosY(3), tileWidth, tileHeight, 0.8, 0.8, 90, 0.03, secondaryColour);
   drawRecursiveCheckerboard(getTilePosX(3), getTilePosY(3), tileWidth, tileHeight, tileCountX, tileCountY, primaryColour, secondaryColour, 3, 3);
   drawInfinitySign(getTilePosX(2), getTilePosY(2), tileWidth, tileHeight, 0.8, 0.3, 0.2, 0.025, secondaryColour);
@@ -69,7 +69,7 @@ int getTilePosY(int _tileNumberY)
 float getPositionByRatio(float _minimalPos, float _lenghtScene, float _ratio)
 {
   float min = _minimalPos;
-  float max = _minimalPos + _lenghtScene -1;
+  float max = _minimalPos + _lenghtScene;
  
   return min + ((max - min)*_ratio);
 }
@@ -240,6 +240,8 @@ void drawStackedLine(float _xPosScene, float _yPosScene, float _widthScene, floa
 /// @param[in] _lineCount The number of line.
 /// @param[in] _ellipsesCountPerLineThe number of ellipsePerLine.
 /// @param[in] _colour The colour of the ellipses.
+/// @param[in] _ratioXPositionCentre Number between 0 and 1 reprensentating the ratio X where to draw the + in the scene. 0.5 being the centre.
+/// @param[in] _ratioYPositionCentre Number between 0 and 1 reprensentating the ratio Y where to draw the + in the scene. 0.5 being the centre.
 void drawLinesOfEllipses(float _xPosScene, float _yPosScene, float _widthScene, float _heightScene, int _lineCount, int _ellipsesCountPerLine, color _colour) 
 {
   noStroke();
@@ -274,9 +276,13 @@ void drawLinesOfEllipses(float _xPosScene, float _yPosScene, float _widthScene, 
 /// @param[in] _ellipseCount The number of ellipses.
 /// @param[in] _colour1 The first colour to use for the target pattern.
 /// @param[in] _colour2 The altenate colour to use for the target pattern.
-void drawTarget(float _xPosScene, float _yPosScene, float _widthScene, float _heightScene, float _widthOfLargestEllipse, float _heightOfLargestEllipse, int _ellipseCount, color _colour1, color _colour2)
+/// @param[in] _ratioXPositionCentre Number between 0 and 1 reprensentating the ratio X where to draw the + in the scene. 0.5 being the centre.
+/// @param[in] _ratioYPositionCentre Number between 0 and 1 reprensentating the ratio Y where to draw the + in the scene. 0.5 being the centre.
+void drawTarget(float _xPosScene, float _yPosScene, float _widthScene, float _heightScene, float _widthOfLargestEllipse, float _heightOfLargestEllipse, int _ellipseCount, color _colour1, color _colour2, float _ratioMiddleX, float _ratioMiddleY)
 {
   noStroke();
+  float centreX = getPositionByRatio(_xPosScene, _widthScene, _ratioMiddleX);
+  float centreY = getPositionByRatio(_yPosScene, _widthScene, _ratioMiddleY);
   for (int i = 0; i < _ellipseCount; i++)
   {
     if (i % 2 == 0)
@@ -286,11 +292,11 @@ void drawTarget(float _xPosScene, float _yPosScene, float _widthScene, float _he
     {
       fill(_colour2);
     }
-    float posX = _xPosScene + (0.5 * _widthScene);
-    float posY = _yPosScene + (0.5 * _heightScene);
-    float widthEllipse = (_widthOfLargestEllipse-(i*(0.87/_ellipseCount))) *_widthScene;
-    float heightEllipse = (_heightOfLargestEllipse-(i*(0.87/_ellipseCount)))*_heightScene;
-    ellipse(posX, posY, widthEllipse, heightEllipse);
+    float differenceWidth = (_widthOfLargestEllipse/(_ellipseCount*2+1))*2;
+    float differenceHeight =(_heightOfLargestEllipse/(_ellipseCount*2+1))*2;
+    float widthEllipse = (_widthOfLargestEllipse-(i*(differenceWidth))) *_widthScene;
+    float heightEllipse = (_heightOfLargestEllipse-(i*(differenceHeight)))*_heightScene;
+    ellipse(centreX, centreY, widthEllipse, heightEllipse);
   }
 }
 
