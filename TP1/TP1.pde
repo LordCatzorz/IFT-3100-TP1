@@ -1,4 +1,4 @@
-color primaryColour = color(255, 255, 255);  //<>// //<>//
+color primaryColour = color(255, 255, 255);  //<>//
 color secondaryColour = color(0, 0, 0);
 color debugColour = color(255, 0, 0);
 
@@ -44,7 +44,7 @@ void update()
   drawStackedLine(getTilePosX(1), getTilePosY(1), tileWidth, tileHeight, 103.0/128.0, 0.9375, 5, secondaryColour, 0.5, (63.5/128.0));
   drawLinesOfEllipses(getTilePosX(3), getTilePosY(1), tileWidth, tileHeight, 3, 3, secondaryColour); 
   drawTarget(getTilePosX(0), getTilePosY(2), tileWidth, tileHeight, (116.0/128.0), (116.0/128.0), 14, secondaryColour, primaryColour, (64.5/128.0), (64.5/128.0)); 
-  drawStar(getTilePosX(1), getTilePosY(3), tileWidth, tileHeight, 0.8, 0.8, 90, 0.03, secondaryColour);
+  drawStar(getTilePosX(1), getTilePosY(3), tileWidth, tileHeight, 0.8, 0.8, 90, 4.0/128.0, secondaryColour);
   drawRecursiveCheckerboard(getTilePosX(3), getTilePosY(3), tileWidth, tileHeight, tileCountX, tileCountY, primaryColour, secondaryColour, 3, 3);
   drawInfinitySign(getTilePosX(2), getTilePosY(2), tileWidth, tileHeight, 0.8, 0.3, 0.2, 0.025, secondaryColour);
 }
@@ -146,7 +146,7 @@ void drawRecursiveCheckerboard(float _xPosScene, float _yPosScene, float _widthS
 /// @param[in] _ratioYPositionCentre Number between 0 and 1 reprensentating the ratio Y where to draw the + in the scene. 0.5 being the centre.
 void drawPlusSign(float _xPosScene, float _yPosScene, float _widthScene, float _heightScene, float _widthRatioVerticalArm, float _heightRatioVerticalArm, float _widthRatioHorizontalArm, float _heightRatioHorizontalArm, color _colour, float _ratioMiddleX, float _ratioMiddleY)
 {
-  float centreX =  getPositionByRatio(_xPosScene, _widthScene, _ratioMiddleX);// _xPosScene + _widthScene-1 * _ratioXPositionCentre; //<>//
+  float centreX =  getPositionByRatio(_xPosScene, _widthScene, _ratioMiddleX);// _xPosScene + _widthScene-1 * _ratioXPositionCentre;
   float centreY = getPositionByRatio(_yPosScene, _heightScene, _ratioMiddleY);//_yPosScene + _heightScene-1 * _ratioYPositionCentre;
 
   float verticalArmWidth = _widthScene * _widthRatioVerticalArm;
@@ -345,7 +345,7 @@ void  drawInfinitySign(float _xPosScene, float _yPosScene, float _widthScene, fl
 /// @param[in] _angleFirstPoint The angle between 0 and 360 where the first point of the star should be drawn.
 /// @param[in] _strokeRatio Number between 0 and 1 reprensentating the percentage of the scene a stroke use.
 /// @param[in] _colour The colour of the star.
-void  drawStar(float _xPosScene, float _yPosScene, float _widthScene, float _heightScene, float _ratioWidthStar, float _ratioHeightStar, float _angleFirstPoint, float _strokeRatio, color _colour)
+void drawStar(float _xPosScene, float _yPosScene, float _widthScene, float _heightScene, float _ratioWidthStar, float _ratioHeightStar, float _angleFirstPoint, float _strokeRatio, color _colour)
 {
   noFill();
   stroke(_colour);
@@ -359,14 +359,19 @@ void  drawStar(float _xPosScene, float _yPosScene, float _widthScene, float _hei
   float centreY = _yPosScene + 0.5 * _heightScene;
 
   float angle = _angleFirstPoint;
-  float point1X = centreX + getXCoordinateEllipseAngle(xRadius, angle);
-  float point1Y = centreY + getYCoordinateEllipseAngle(yRadius, angle);
+  float deltaX = getXCoordinateEllipseAngle(xRadius, angle) - 1; // Ok, M. Le professeur... C'est pas cool de mettre un étoile irrégulié!
+  float deltaY = getYCoordinateEllipseAngle(yRadius, angle);
+  float point1X = centreX + deltaX;
+  float point1Y = centreY + deltaY;
   for (int i = 0; i < pointCount; i = i+1)
   {
     angle = angle + 2*(360/pointCount);
+    
+    deltaX = getXCoordinateEllipseAngle(xRadius, angle);
 
-    float point2X = centreX + getXCoordinateEllipseAngle(xRadius, angle);
-    float point2Y = centreY + getYCoordinateEllipseAngle(yRadius, angle);   
+    deltaY = getYCoordinateEllipseAngle(yRadius, angle); 
+    float point2X = centreX + deltaX;
+    float point2Y = centreY + deltaY;  
     line(point1X, point1Y, point2X, point2Y);
     point1X = point2X;
     point1Y = point2Y;
