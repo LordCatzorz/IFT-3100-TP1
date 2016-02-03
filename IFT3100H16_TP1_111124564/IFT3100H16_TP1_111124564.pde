@@ -7,33 +7,24 @@ int frameGrowing = -1;
 
 int tileCountX = 4;
 int tileCountY = 4;
+PGraphics image;
 
 void setup()
 {
   size(512, 512);
+  image = createGraphics(512,512);
   //frameRate(60);
   //surface.setResizable(true);
   update();
 }
 void exit()
 {
-  save("IFT3100H16_TP1.png");
+  image.save("IFT3100H16_TP1_111124564.png");
 }
-void draw()
-{
-  //update();
-  //surface.setSize(frameSize, frameSize);
-  frameSize = frameSize + frameGrowing;
-  if (frameSize > 800)
-  {
-    frameGrowing = -1;
-  } else if (frameSize < 10)
-  {
-    frameGrowing = 1;
-  }
-}
+
 void update()
 {
+  image.beginDraw();
   drawCheckerboard(0, 0, width, height, tileCountX, tileCountY, primaryColour, secondaryColour);
 
   float tileWidth = width/tileCountX;
@@ -46,7 +37,9 @@ void update()
   drawTarget(getTilePosX(0), getTilePosY(2), tileWidth, tileHeight, (116.0/128.0), (116.0/128.0), 14, secondaryColour, primaryColour, (64.5/128.0), (64.5/128.0)); 
   drawStar(getTilePosX(1), getTilePosY(3), tileWidth, tileHeight, 0.8, 0.8, 90, 4.0/128.0, secondaryColour);
   drawRecursiveCheckerboard(getTilePosX(3), getTilePosY(3), tileWidth, tileHeight, tileCountX, tileCountY, primaryColour, secondaryColour, 3, 3);
-  drawInfinitySign(getTilePosX(2), getTilePosY(2), tileWidth, tileHeight, 0.8, 0.3, 0.2, 0.025, secondaryColour);
+  drawInfinitySign(getTilePosX(2), getTilePosY(2), tileWidth, tileHeight, 0.8, 0.3, 0.7, 0.055, secondaryColour);
+  image.endDraw();
+  image(image,0,0);
 }
 
 /// Get the x coordinate of the top-left corner of a tile position given. Starts at 0.
@@ -85,7 +78,7 @@ float getPositionByRatio(float _minimalPos, float _lenghtScene, float _ratio)
 /// @param[in] _colour2 The alternated colour to use for the checkboard pattern.
 void drawCheckerboard(float _xPosScene, float _yPosScene, float _widthScene, float _heightScene, int _tileCountX, int _tileCountY, color _colour1, color _colour2)
 {
-  noStroke();
+  image.noStroke();
   float widthOfTile = _widthScene / _tileCountX;
   float heightOfTile = _heightScene / _tileCountY;
   for (int i = 0; i < _tileCountX; i++)
@@ -97,13 +90,13 @@ void drawCheckerboard(float _xPosScene, float _yPosScene, float _widthScene, flo
 
       if ((i + j) % 2 == 0)
       {
-        fill(_colour1);
+        image.fill(_colour1);
       } else
       {
-        fill(_colour2);
+        image.fill(_colour2);
       }
 
-      rect(xPosOfTile, yPosOfTile, widthOfTile, heightOfTile);
+      image.rect(xPosOfTile, yPosOfTile, widthOfTile, heightOfTile);
     }
   }
 }
@@ -160,11 +153,11 @@ void drawPlusSign(float _xPosScene, float _yPosScene, float _widthScene, float _
   float horizontalArmX = centreX - ((horizontalArmWidth)/2.0);
   float horizontalArmY = centreY - ((horizontalArmHeight)/2.0);
 
-  noStroke();
-  fill(_colour);
+  image.noStroke();
+  image.fill(_colour);
 
-  rect(verticalArmX, verticalArmY, verticalArmWidth, verticalArmHeight);
-  rect(horizontalArmX, horizontalArmY, horizontalArmWidth, horizontalArmHeight);
+  image.rect(verticalArmX, verticalArmY, verticalArmWidth, verticalArmHeight);
+  image.rect(horizontalArmX, horizontalArmY, horizontalArmWidth, horizontalArmHeight);
 }
 
 /// Draws a cross sign ("X") in a defined scene
@@ -180,12 +173,12 @@ void drawPlusSign(float _xPosScene, float _yPosScene, float _widthScene, float _
 /// @param[in] _colour The colour of the X.
 void drawCrossSign(float _xPosScene, float _yPosScene, float _widthScene, float _heightScene, float _ratioXBegin, float _ratioYBegin, float _ratioXEnd, float _ratioYEnd, float _strokeRatio, color _colour)
 {
-  noFill();
-  stroke(_colour);
-  strokeWeight(sqrt(_widthScene * _heightScene) * _strokeRatio);
+  image.noFill();
+  image.stroke(_colour);
+  image.strokeWeight(sqrt(_widthScene * _heightScene) * _strokeRatio);
 
-  line(_xPosScene + (_ratioXBegin * _widthScene), _yPosScene + (_ratioYBegin * _heightScene), _xPosScene + (_ratioXEnd * _widthScene), _yPosScene + (_ratioYEnd * _heightScene));
-  line(_xPosScene + (_ratioXEnd * _widthScene), _yPosScene + (_ratioYBegin * _heightScene), _xPosScene + (_ratioXBegin * _widthScene), _yPosScene + (_ratioYEnd * _heightScene));
+  image.line(_xPosScene + (_ratioXBegin * _widthScene), _yPosScene + (_ratioYBegin * _heightScene), _xPosScene + (_ratioXEnd * _widthScene), _yPosScene + (_ratioYEnd * _heightScene));
+  image.line(_xPosScene + (_ratioXEnd * _widthScene), _yPosScene + (_ratioYBegin * _heightScene), _xPosScene + (_ratioXBegin * _widthScene), _yPosScene + (_ratioYEnd * _heightScene));
 }
 
 /// Draws a stack of lines where the middle one is the smallest and the outer one grows at a fibonacci rate.
@@ -201,8 +194,8 @@ void drawCrossSign(float _xPosScene, float _yPosScene, float _widthScene, float 
 /// @param[in] _ratioYPositionCentre Number between 0 and 1 reprensentating the ratio Y where to draw the + in the scene. 0.5 being the centre.
 void drawStackedLine(float _xPosScene, float _yPosScene, float _widthScene, float _heightScene, float _drawZoneWidthRatio, float _drawZoneHeightRatio, int _halfNumberOfLine, color _colour, float _ratioMiddleX, float _ratioMiddleY)
 {
-  noStroke();
-  fill(_colour);
+  image.noStroke();
+  image.fill(_colour);
   
   float linePosYDelta = (_heightScene*_drawZoneHeightRatio)/(_halfNumberOfLine*2);
 
@@ -217,7 +210,7 @@ void drawStackedLine(float _xPosScene, float _yPosScene, float _widthScene, floa
   float lineHeightA = initialLineHeight;
   float lineHeightB = lineHeightA;
 
-  rect(linePosX, centreY + lineHeightA/2.0, drawZoneWidth, lineHeightB); 
+  image.rect(linePosX, centreY + lineHeightA/2.0, drawZoneWidth, lineHeightB); 
   for (int i = 1; i < _halfNumberOfLine; i++)
   {
     float lineHeightTemp = lineHeightA;
@@ -226,8 +219,8 @@ void drawStackedLine(float _xPosScene, float _yPosScene, float _widthScene, floa
     
     float lineTopPosY = centreY - i * linePosYDelta - lineHeightB/2.0;
     float lineBottomPosY = centreY + i * linePosYDelta - lineHeightB/2.0 +initialLineHeight; // -1 Magic Number à cause du prof!
-    rect(linePosX, lineTopPosY, drawZoneWidth, lineHeightB); 
-    rect(linePosX, lineBottomPosY, drawZoneWidth, lineHeightB);
+    image.rect(linePosX, lineTopPosY, drawZoneWidth, lineHeightB); 
+    image.rect(linePosX, lineBottomPosY, drawZoneWidth, lineHeightB);
     
   }
 }
@@ -244,8 +237,8 @@ void drawStackedLine(float _xPosScene, float _yPosScene, float _widthScene, floa
 /// @param[in] _ratioYPositionCentre Number between 0 and 1 reprensentating the ratio Y where to draw the + in the scene. 0.5 being the centre.
 void drawLinesOfEllipses(float _xPosScene, float _yPosScene, float _widthScene, float _heightScene, int _lineCount, int _ellipsesCountPerLine, color _colour) 
 {
-  noStroke();
-  fill(_colour);
+  image.noStroke();
+  image.fill(_colour);
   float lineDelta = _heightScene / (_lineCount+1);
   float columnDelta = _widthScene / (_ellipsesCountPerLine+1);
   float ellipseWidth = columnDelta / 2;
@@ -260,7 +253,7 @@ void drawLinesOfEllipses(float _xPosScene, float _yPosScene, float _widthScene, 
       {
         posX = posX + ellipseWidth;
       }
-      ellipse(posX, posY, ellipseWidth, ellipseHeight);
+      image.ellipse(posX, posY, ellipseWidth, ellipseHeight);
     }
   }
 }
@@ -280,23 +273,23 @@ void drawLinesOfEllipses(float _xPosScene, float _yPosScene, float _widthScene, 
 /// @param[in] _ratioYPositionCentre Number between 0 and 1 reprensentating the ratio Y where to draw the + in the scene. 0.5 being the centre.
 void drawTarget(float _xPosScene, float _yPosScene, float _widthScene, float _heightScene, float _widthOfLargestEllipse, float _heightOfLargestEllipse, int _ellipseCount, color _colour1, color _colour2, float _ratioMiddleX, float _ratioMiddleY)
 {
-  noStroke();
+  image.noStroke();
   float centreX = getPositionByRatio(_xPosScene, _widthScene, _ratioMiddleX);
   float centreY = getPositionByRatio(_yPosScene, _widthScene, _ratioMiddleY);
   for (int i = 0; i < _ellipseCount; i++)
   {
     if (i % 2 == 0)
     {
-      fill(_colour1);
+      image.fill(_colour1);
     } else
     {
-      fill(_colour2);
+      image.fill(_colour2);
     }
     float differenceWidth = (_widthOfLargestEllipse/(_ellipseCount*2+1))*2;
     float differenceHeight =(_heightOfLargestEllipse/(_ellipseCount*2+1))*2;
     float widthEllipse = (_widthOfLargestEllipse-(i*(differenceWidth))) *_widthScene;
     float heightEllipse = (_heightOfLargestEllipse-(i*(differenceHeight)))*_heightScene;
-    ellipse(centreX, centreY, widthEllipse, heightEllipse);
+    image.ellipse(centreX, centreY, widthEllipse, heightEllipse);
   }
 }
 
@@ -313,26 +306,26 @@ void drawTarget(float _xPosScene, float _yPosScene, float _widthScene, float _he
 /// @todo Find a way to make the height of the loop proportional to the size of the scene.
 void  drawInfinitySign(float _xPosScene, float _yPosScene, float _widthScene, float _heightScene, float _ratioWidthInfinity, float _ratioHeightInfinity, float _anglePrecison, float _strokeRatio, color _colour)
 {
-  noFill();
-  stroke(_colour);
-  strokeWeight(sqrt(_widthScene * _heightScene) * _strokeRatio);
+  
+  image.noStroke();
+  image.fill(_colour);
+  float size = sqrt(_widthScene * _heightScene) * _strokeRatio;
   float centreX = _xPosScene + 0.5 * _widthScene;
   float centreY = _yPosScene + 0.5 * _heightScene;
-  float a = (_widthScene*_ratioWidthInfinity)-g.strokeWeight;
-  float diff = 0.1;
-  for (float x = -a-diff; x < a+diff; x = x + _anglePrecison)
+  float a = (_widthScene*_ratioWidthInfinity)-size;
+  for (float x = -a-_anglePrecison; x < a+_anglePrecison; x = x + _anglePrecison)
   {
-
     float y1 = sqrt(sqrt(sq(a)*(sq(a)+8*sq(x)))-sq(a)-2*(sq(x)))/sqrt(2)*0.5;
     float y2 = -sqrt(sqrt(sq(a)*(sq(a)+8*sq(x)))-sq(a)-2*(sq(x)))/sqrt(2)*0.5;
 
     //stroke(#FF0000);
-    ellipse(centreX + (x*0.5), centreY + y1, g.strokeWeight, g.strokeWeight);
+    image.ellipse(centreX + (x*0.5), centreY + y1, size, size);
     //line (centreX + (x*0.5) , centreY + y1,centreX + (x*0.5), centreY + y1);
     //stroke(#00FF00);
-    ellipse(centreX + (x*0.5), centreY + y2, g.strokeWeight, g.strokeWeight);
+    image.ellipse(centreX + (x*0.5), centreY + y2, size, size);
     //line(centreX + (x*0.5), centreY + y2, centreX + (x*0.5), centreY + y2);
   }
+  
 }
 
 /// Draws a five pointed star
@@ -347,9 +340,9 @@ void  drawInfinitySign(float _xPosScene, float _yPosScene, float _widthScene, fl
 /// @param[in] _colour The colour of the star.
 void drawStar(float _xPosScene, float _yPosScene, float _widthScene, float _heightScene, float _ratioWidthStar, float _ratioHeightStar, float _angleFirstPoint, float _strokeRatio, color _colour)
 {
-  noFill();
-  stroke(_colour);
-  strokeWeight(sqrt(_widthScene * _heightScene) * _strokeRatio);
+  image.noFill();
+  image.stroke(_colour);
+  image.strokeWeight(sqrt(_widthScene * _heightScene) * _strokeRatio);
   int pointCount = 5;
   float heightEllipse = _ratioHeightStar * _heightScene;
   float widthEllipse = _ratioWidthStar * _widthScene;
@@ -372,7 +365,7 @@ void drawStar(float _xPosScene, float _yPosScene, float _widthScene, float _heig
     deltaY = getYCoordinateEllipseAngle(yRadius, angle); 
     float point2X = centreX + deltaX;
     float point2Y = centreY + deltaY;  
-    line(point1X, point1Y, point2X, point2Y);
+    image.line(point1X, point1Y, point2X, point2Y);
     point1X = point2X;
     point1Y = point2Y;
   }
